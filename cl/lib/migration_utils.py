@@ -1,7 +1,7 @@
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.management import create_permissions
 from django.core.management import call_command
-from django.core.serializers import base, python
+from django.core.serializers import base
 from django.utils import timezone
 from rest_framework.authtoken.models import Token
 
@@ -9,14 +9,8 @@ from rest_framework.authtoken.models import Token
 def load_migration_fixture(apps, schema_editor, fixture, app_label):
     """Load a fixture during a migration.
 
-    This is a rather un-fun utility to load a fixture during a migration. It
-    works by monkey patching the normal fixture code with code that can load
-    fixtures at a certain point in a migration, ie, not using the current state
-    of the models.
-
-    For more information, see this answer:
-
-    https://stackoverflow.com/a/39743581/64911
+    This function loads a fixture during a migration using the correct app state
+    at the time of the migration.
 
     :param apps: Apps at the state of the migration.
     :param schema_editor: The schema at the time of the migration.
@@ -24,13 +18,9 @@ def load_migration_fixture(apps, schema_editor, fixture, app_label):
     :param app_label: The app label the fixture should be loaded into.
     :return: None
     """
-    # Save the old _get_model() function
-    old_get_model = python._get_model
+    original_serializer_get_model = base.serializers.get_model
 
-    # Define new _get_model() function here, which utilizes the apps argument
-    # to get the historical version of a model. This piece of code is directly
-    # stolen from django.core.serializers.python._get_model, unchanged.
-    def _get_model(model_identifier):
+    def get_model_at_migration(model_identifier):
         try:
             return apps.get_model(model_identifier)
         except (LookupError, TypeError):
@@ -38,15 +28,12 @@ def load_migration_fixture(apps, schema_editor, fixture, app_label):
                 f"Invalid model identifier: '{model_identifier}'"
             )
 
-    # Replace the _get_model() function on the module so loaddata can use it
-    python._get_model = _get_model
+    base.serializers.get_model = get_model_at_migration
 
     try:
-        # Call loaddata command
         call_command("loaddata", fixture, app_label=app_label)
     finally:
-        # Restore old _get_model() function
-        python._get_model = old_get_model
+        base.serializers.get_model = original_serializer_get_model
 
 
 def make_new_user(apps, schema_editor, username, email, permission_codenames):

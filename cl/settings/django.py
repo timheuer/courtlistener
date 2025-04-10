@@ -155,6 +155,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "rest_framework.authtoken",
     "django_filters",
+    "drf_spectacular",
     "storages",
     "waffle",
     "admin_cursor_paginator",

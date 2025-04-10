@@ -187,6 +187,11 @@ for prefix, viewset, basename in router.registry:
 # accordingly, as no need to apply conditions based on the V3 API version.
 # - Remove V3 documentation.
 urlpatterns = [
+    # OpenAPI schema URLs
+    path('schema/', views.schema_view, name='schema'),
+    path('schema/swagger-ui/', views.swagger_ui_view, name='swagger-ui'),
+    path('schema/redoc/', views.redoc_view, name='redoc'),
+    
     path(
         "api-auth/",
         include("rest_framework.urls", namespace="rest_framework"),

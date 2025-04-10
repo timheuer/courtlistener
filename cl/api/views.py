@@ -14,6 +14,7 @@ from django.template.response import TemplateResponse
 from django.views.decorators.cache import cache_page
 from django.views.generic import TemplateView
 from requests import Session
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView, SpectacularRedocView
 
 from cl.lib.elasticsearch_utils import (
     do_es_alert_estimation_query,
@@ -31,6 +32,10 @@ from cl.simple_pages.coverage_utils import build_chart_data
 from cl.simple_pages.views import get_coverage_data_fds
 
 logger = logging.getLogger(__name__)
+
+schema_view = SpectacularAPIView.as_view()
+swagger_ui_view = SpectacularSwaggerView.as_view(url_name='schema')
+redoc_view = SpectacularRedocView.as_view(url_name='schema')
 
 max_court_id_length = Court._meta.get_field("id").max_length
 VALID_COURT_ID_REGEX = re.compile(rf"^\w{{1,{max_court_id_length}}}$")

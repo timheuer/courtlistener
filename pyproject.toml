@@ -45,7 +45,7 @@ django-mathfilters = "*"
 django-pghistory = "^3.5.4"
 django-ratelimit = "^4.1.0"
 django-storages = "^1.14.5"
-djangorestframework = {git = "https://github.com/encode/django-rest-framework.git", rev = "cc3c89a11c7ee9cf7cfd732e0a329c318ace71b2"}
+djangorestframework = "^3.14.0"
 djangorestframework-xml = "^2.0.0"
 feedparser = "^6.0.10"
 httplib2 = "^0.22.0"
@@ -116,6 +116,7 @@ drf-dynamic-fields = "^0.4.0"
 django-ses = {extras = ["events"], version = "^4.4.0"}
 juriscraper = "^2.6.26"
 django-cotton = "^2.0.1"
+drf-spectacular = "^0.28.0"
 
 
 [tool.poetry.group.dev.dependencies]

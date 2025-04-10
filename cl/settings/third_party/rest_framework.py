@@ -177,9 +177,18 @@ REST_FRAMEWORK = {
     "ORDERING_PARAM": "order_by",
     "HTML_SELECT_CUTOFF": 100,
     "UPLOADED_FILES_USE_URL": False,
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
 
 if DEVELOPMENT:
     REST_FRAMEWORK["DEFAULT_THROTTLE_RATES"]["anon"] = "10000/day"  # type: ignore
 
 BLOCK_NEW_V3_USERS = env.bool("BLOCK_NEW_V3_USERS", default=False)
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "CourtListener API",
+    "DESCRIPTION": "API for searching and retrieving court opinions, oral arguments, judges, and more from CourtListener",
+    "VERSION": "v3",
+    "SERVE_INCLUDE_SCHEMA": False,
+    "COMPONENT_SPLIT_REQUEST": True,
+}
